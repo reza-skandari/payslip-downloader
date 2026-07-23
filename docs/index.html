@@ -279,6 +279,10 @@
       <span class="dot"></span>
       <span id="dl-count">Free download</span>
     </div>
+    <div class="dl-stat" id="launch-stat" style="display:none">
+      <span class="dot" style="background:var(--accent)"></span>
+      <span id="launch-count"></span>
+    </div>
   </div>
 
   <hr>
@@ -289,7 +293,7 @@
       <div class="step">
         <p class="step-num">Step 1</p>
         <p class="step-title">Run the app</p>
-        <p class="step-body">Double-click the exe. First launch downloads the browser it needs (~1 min). Every run after is instant.</p>
+        <p class="step-body">Double-click the exe. First launch downloads the browser it needs (~1 min). Every run after is instant. If Windows warns "unrecognised app", click <strong>More info → Run anyway</strong>.</p>
       </div>
       <div class="step">
         <p class="step-num">Step 2</p>
@@ -335,6 +339,18 @@
       if (count > 0)
         document.getElementById('dl-count').textContent =
           count.toLocaleString() + ' download' + (count !== 1 ? 's' : '');
+    })
+    .catch(() => {});
+
+  fetch('https://api.counterapi.dev/v1/rskandari-payslip/launches')
+    .then(r => r.json())
+    .then(data => {
+      const n = data.count;
+      if (n > 0) {
+        document.getElementById('launch-count').textContent =
+          n.toLocaleString() + ' launch' + (n !== 1 ? 'es' : '');
+        document.getElementById('launch-stat').style.display = 'inline-flex';
+      }
     })
     .catch(() => {});
 </script>
