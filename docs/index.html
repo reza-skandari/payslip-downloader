@@ -388,7 +388,7 @@
   fetch('https://api.counterapi.dev/v1/rskandari-payslip/launches')
     .then(r => r.json())
     .then(data => {
-      const n = data.count;
+      const n = data.count - 1; // subtract the test hit during setup
       if (n > 0) {
         document.getElementById('launch-count').textContent =
           n.toLocaleString() + ' launch' + (n !== 1 ? 'es' : '');
