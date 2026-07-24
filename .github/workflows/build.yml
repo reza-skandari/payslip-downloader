@@ -46,10 +46,16 @@ jobs:
             gui.py
         shell: pwsh
 
+      - name: Add versioned copy
+        run: Copy-Item dist/payslip-downloader.exe "dist/payslip-downloader-${{ github.ref_name }}.exe"
+        shell: pwsh
+
       - name: Create pre-release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/payslip-downloader.exe
+          files: |
+            dist/payslip-downloader.exe
+            dist/payslip-downloader-${{ github.ref_name }}.exe
           prerelease: true
           name: ${{ github.ref_name }} (pre-release — pending testing)
           body: |
