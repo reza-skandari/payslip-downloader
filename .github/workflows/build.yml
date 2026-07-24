@@ -33,6 +33,7 @@ jobs:
             --onefile `
             --assume-yes-for-downloads `
             --windows-console-mode=disable `
+            --product-version=1.0.0.0 `
             "--onefile-tempdir-spec={CACHE_DIR}\payslip-downloader\{VERSION}" `
             --output-filename=payslip-downloader.exe `
             --output-dir=dist `
