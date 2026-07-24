@@ -27,18 +27,13 @@ jobs:
       - name: Install dependencies
         run: pip install nuitka zstandard ordered-set playwright customtkinter python-dotenv python-dateutil requests
 
-      - name: Get playwright package path
-        run: |
-          $p = python -c "import playwright, os; print(os.path.dirname(playwright.__file__))"
-          echo "PLAYWRIGHT_PATH=$p" | Out-File -FilePath $env:GITHUB_ENV -Append
-        shell: pwsh
-
       - name: Build with Nuitka
         run: |
           python -m nuitka `
-            --standalone `
+            --onefile `
             --assume-yes-for-downloads `
             --windows-console-mode=disable `
+            "--onefile-tempdir-spec={CACHE_DIR}\payslip-downloader\{VERSION}" `
             --output-filename=payslip-downloader.exe `
             --output-dir=dist `
             --include-package=playwright `
@@ -53,8 +48,8 @@ jobs:
             gui.py
         shell: pwsh
 
-      - name: Zip output folder
-        run: Compress-Archive -Path dist/gui.dist -DestinationPath dist/payslip-downloader.zip
+      - name: Zip exe
+        run: Compress-Archive -Path dist/payslip-downloader.exe -DestinationPath dist/payslip-downloader.zip
         shell: pwsh
 
       - name: Create pre-release
@@ -65,8 +60,9 @@ jobs:
           name: ${{ github.ref_name }} (pre-release — pending testing)
           body: |
             Automated build using Nuitka (compiled Python → native binary).
+            Extracts to AppData on first run — subsequent launches are instant.
 
-            **How to install:** download the zip, extract it anywhere, run `payslip-downloader.exe` inside the folder.
+            **How to install:** download the zip, extract it, run `payslip-downloader.exe`.
 
             ⚠️ Pre-release for testing. The stable download link is unaffected until promoted.
         env:
