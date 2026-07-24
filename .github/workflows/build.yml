@@ -35,17 +35,41 @@ jobs:
           cd ..
           pip install .
 
-      - name: Build exe
-        run: pyinstaller payslip-downloader.spec
+      - name: Build exe (onedir)
+        run: |
+          pyinstaller `
+            --onedir `
+            --windowed `
+            --splash splash.png `
+            --name payslip-downloader `
+            --collect-all playwright `
+            --collect-all customtkinter `
+            --exclude-module numpy `
+            --exclude-module matplotlib `
+            --exclude-module pandas `
+            --exclude-module scipy `
+            --exclude-module PIL `
+            --exclude-module setuptools `
+            --exclude-module distutils `
+            --exclude-module unittest `
+            --exclude-module xmlrpc `
+            gui.py
+        shell: pwsh
+
+      - name: Zip output folder
+        run: Compress-Archive -Path dist/payslip-downloader -DestinationPath dist/payslip-downloader.zip
+        shell: pwsh
 
       - name: Create pre-release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/payslip-downloader.exe
+          files: dist/payslip-downloader.zip
           prerelease: true
           name: ${{ github.ref_name }} (pre-release — pending testing)
           body: |
-            Automated build with freshly compiled PyInstaller bootloader.
+            Automated build using onedir mode — packaged as a zip to avoid antivirus false positives.
+
+            **How to install:** download the zip, extract it anywhere, and run `payslip-downloader.exe` inside the folder.
 
             ⚠️ This is a pre-release for testing. The stable download link is unaffected until this is promoted.
         env:
