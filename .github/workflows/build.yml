@@ -24,40 +24,36 @@ jobs:
       - name: Set up MSVC compiler
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Install Python dependencies
-        run: pip install playwright customtkinter python-dotenv python-dateutil requests
+      - name: Install dependencies
+        run: pip install nuitka zstandard ordered-set playwright customtkinter python-dotenv python-dateutil requests
 
-      - name: Compile PyInstaller bootloader from source
+      - name: Get playwright package path
         run: |
-          git clone https://github.com/pyinstaller/pyinstaller.git _pyinstaller
-          cd _pyinstaller/bootloader
-          python waf distclean all
-          cd ..
-          pip install .
+          $p = python -c "import playwright, os; print(os.path.dirname(playwright.__file__))"
+          echo "PLAYWRIGHT_PATH=$p" | Out-File -FilePath $env:GITHUB_ENV -Append
+        shell: pwsh
 
-      - name: Build exe (onedir)
+      - name: Build with Nuitka
         run: |
-          pyinstaller `
-            --onedir `
-            --windowed `
-            --splash splash.png `
-            --name payslip-downloader `
-            --collect-all playwright `
-            --collect-all customtkinter `
-            --exclude-module numpy `
-            --exclude-module matplotlib `
-            --exclude-module pandas `
-            --exclude-module scipy `
-            --exclude-module PIL `
-            --exclude-module setuptools `
-            --exclude-module distutils `
-            --exclude-module unittest `
-            --exclude-module xmlrpc `
+          python -m nuitka `
+            --standalone `
+            --windows-console-mode=disable `
+            --output-filename=payslip-downloader.exe `
+            --output-dir=dist `
+            --include-package=playwright `
+            --include-package=customtkinter `
+            --include-package=dotenv `
+            --include-package=dateutil `
+            --include-package=requests `
+            --include-package=tkinter `
+            --include-package-data=playwright `
+            --include-package-data=customtkinter `
+            --include-data-files=splash.png=splash.png `
             gui.py
         shell: pwsh
 
       - name: Zip output folder
-        run: Compress-Archive -Path dist/payslip-downloader -DestinationPath dist/payslip-downloader.zip
+        run: Compress-Archive -Path dist/gui.dist -DestinationPath dist/payslip-downloader.zip
         shell: pwsh
 
       - name: Create pre-release
@@ -67,10 +63,10 @@ jobs:
           prerelease: true
           name: ${{ github.ref_name }} (pre-release — pending testing)
           body: |
-            Automated build using onedir mode — packaged as a zip to avoid antivirus false positives.
+            Automated build using Nuitka (compiled Python → native binary).
 
-            **How to install:** download the zip, extract it anywhere, and run `payslip-downloader.exe` inside the folder.
+            **How to install:** download the zip, extract it anywhere, run `payslip-downloader.exe` inside the folder.
 
-            ⚠️ This is a pre-release for testing. The stable download link is unaffected until this is promoted.
+            ⚠️ Pre-release for testing. The stable download link is unaffected until promoted.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
