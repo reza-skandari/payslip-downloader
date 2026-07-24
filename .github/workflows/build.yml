@@ -21,31 +21,28 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Set up MSVC compiler
-        uses: ilammy/msvc-dev-cmd@v1
-
       - name: Install dependencies
-        run: pip install nuitka zstandard ordered-set playwright customtkinter python-dotenv python-dateutil requests
+        run: pip install pyinstaller playwright customtkinter python-dotenv python-dateutil requests
 
-      - name: Build with Nuitka
+      - name: Build with PyInstaller
         run: |
-          python -m nuitka `
+          pyinstaller `
             --onefile `
-            --assume-yes-for-downloads `
-            --windows-console-mode=disable `
-            --product-version=1.0.0.0 `
-            "--onefile-tempdir-spec={CACHE_DIR}\payslip-downloader\{VERSION}" `
-            --output-filename=payslip-downloader.exe `
-            --output-dir=dist `
-            --include-package=playwright `
-            --include-package=customtkinter `
-            --include-package=dotenv `
-            --include-package=dateutil `
-            --include-package=requests `
-            --include-package=tkinter `
-            --include-package-data=playwright `
-            --include-package-data=customtkinter `
-            --include-data-files=splash.png=splash.png `
+            --windowed `
+            --splash splash.png `
+            --name payslip-downloader `
+            "--runtime-tmpdir=%LOCALAPPDATA%\payslip-downloader" `
+            --collect-all playwright `
+            --collect-all customtkinter `
+            --exclude-module numpy `
+            --exclude-module matplotlib `
+            --exclude-module pandas `
+            --exclude-module scipy `
+            --exclude-module PIL `
+            --exclude-module setuptools `
+            --exclude-module distutils `
+            --exclude-module unittest `
+            --exclude-module xmlrpc `
             gui.py
         shell: pwsh
 
@@ -60,7 +57,7 @@ jobs:
           prerelease: true
           name: ${{ github.ref_name }} (pre-release — pending testing)
           body: |
-            Automated build using Nuitka (compiled Python → native binary).
+            Automated build using PyInstaller.
             Extracts to AppData on first run — subsequent launches are instant.
 
             **How to install:** download the zip, extract it, run `payslip-downloader.exe`.
