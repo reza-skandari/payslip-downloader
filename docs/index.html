@@ -435,8 +435,9 @@
       if (data.tag_name) {
         const v = document.getElementById('dl-version');
         if (v) v.textContent = '(' + data.tag_name + ')';
+        const versioned = (data.assets || []).find(a => a.name !== 'payslip-downloader.exe');
         const a = document.querySelector('a.btn-download');
-        if (a) a.href = 'https://github.com/reza-skandari/payslip-downloader/releases/latest/download/payslip-downloader-' + data.tag_name + '.exe';
+        if (a && versioned) a.href = versioned.browser_download_url;
       }
     })
     .catch(() => {});
