@@ -1,0 +1,49 @@
+name: Build Windows exe
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up MSVC compiler
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Python dependencies
+        run: pip install playwright customtkinter python-dotenv python-dateutil requests
+
+      - name: Compile PyInstaller bootloader from source
+        run: |
+          git clone https://github.com/pyinstaller/pyinstaller.git _pyinstaller
+          cd _pyinstaller/bootloader
+          python waf distclean all
+          cd ..
+          pip install .
+
+      - name: Build exe
+        run: pyinstaller payslip-downloader.spec
+
+      - name: Create pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/payslip-downloader.exe
+          prerelease: true
+          name: ${{ github.ref_name }} (pre-release — pending testing)
+          body: |
+            Automated build with freshly compiled PyInstaller bootloader.
+
+            ⚠️ This is a pre-release for testing. The stable download link is unaffected until this is promoted.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
