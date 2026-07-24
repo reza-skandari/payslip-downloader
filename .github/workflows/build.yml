@@ -37,6 +37,7 @@ jobs:
         run: |
           python -m nuitka `
             --standalone `
+            --assume-yes-for-downloads `
             --windows-console-mode=disable `
             --output-filename=payslip-downloader.exe `
             --output-dir=dist `
