@@ -220,6 +220,41 @@
     color: var(--text-2);
   }
 
+  /* ── SmartScreen note ── */
+  .smartscreen-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid #C8860A;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+  }
+
+  .smartscreen-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    color: #C8860A;
+    margin-top: 1px;
+  }
+
+  .smartscreen-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .smartscreen-body {
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  .smartscreen-body a { color: var(--accent); text-decoration: none; }
+  .smartscreen-body a:hover { text-decoration: underline; }
+
   /* ── Contact card ── */
   .contact-card {
     display: flex;
@@ -324,6 +359,14 @@
     <div class="dl-stat" id="launch-stat" style="display:none">
       <span class="dot" style="background:var(--accent)"></span>
       <span id="launch-count"></span>
+    </div>
+  </div>
+
+  <div class="smartscreen-note">
+    <div class="smartscreen-icon">⚠</div>
+    <div>
+      <p class="smartscreen-title">Windows may warn you on first launch</p>
+      <p class="smartscreen-body">Because this app isn't published through the Microsoft Store, Windows Defender SmartScreen may show <em>"Windows protected your PC"</em>. This is normal for independently distributed software. To proceed: click <strong>More info</strong>, then <strong>Run anyway</strong>. The app is open source — you can <a href="https://github.com/reza-skandari/payslip-downloader" target="_blank" rel="noopener">review the code on GitHub</a>.</p>
     </div>
   </div>
 
