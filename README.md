@@ -80,11 +80,9 @@ Your password is **never** stored — you type it manually in the browser each t
 ├── downloader.py           # Playwright automation (login + downloads)
 ├── build.bat               # PyInstaller build script
 ├── splash.png              # Splash screen shown during exe startup
-├── payslip-downloader.spec # PyInstaller spec (auto-generated, included for reproducibility)
+├── payslip-downloader.spec # PyInstaller spec (included for reproducibility)
 ├── requirements.txt        # Python dependencies
-├── .env.example            # Template for optional config
-└── docs/                   # GitHub Pages landing page
-    └── index.html
+└── .env.example            # Template for optional config
 ```
 
 ---
