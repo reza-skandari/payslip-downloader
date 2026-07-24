@@ -46,14 +46,10 @@ jobs:
             gui.py
         shell: pwsh
 
-      - name: Zip exe
-        run: Compress-Archive -Path dist/payslip-downloader.exe -DestinationPath dist/payslip-downloader.zip
-        shell: pwsh
-
       - name: Create pre-release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/payslip-downloader.zip
+          files: dist/payslip-downloader.exe
           prerelease: true
           name: ${{ github.ref_name }} (pre-release — pending testing)
           body: |
