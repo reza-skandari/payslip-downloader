@@ -55,6 +55,7 @@ if /i "%1"=="--dev" (
         --windowed ^
         --splash splash.png ^
         --name payslip-downloader ^
+        "--runtime-tmpdir=%LOCALAPPDATA%\payslip-downloader" ^
         --collect-all playwright ^
         --collect-all customtkinter ^
         --exclude-module numpy ^

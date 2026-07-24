@@ -1,0 +1,63 @@
+name: Build Windows exe
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyinstaller playwright customtkinter python-dotenv python-dateutil requests
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller `
+            --onefile `
+            --windowed `
+            --splash splash.png `
+            --name payslip-downloader `
+            "--runtime-tmpdir=%LOCALAPPDATA%\payslip-downloader" `
+            --collect-all playwright `
+            --collect-all customtkinter `
+            --exclude-module numpy `
+            --exclude-module matplotlib `
+            --exclude-module pandas `
+            --exclude-module scipy `
+            --exclude-module PIL `
+            --exclude-module setuptools `
+            --exclude-module distutils `
+            --exclude-module unittest `
+            --exclude-module xmlrpc `
+            gui.py
+        shell: pwsh
+
+      - name: Create pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/payslip-downloader.exe
+          prerelease: true
+          name: ${{ github.ref_name }} (pre-release — pending testing)
+          body: |
+            Automated build using PyInstaller.
+            Extracts to AppData on first run — subsequent launches are instant.
+
+            **How to install:** download the zip, extract it, run `payslip-downloader.exe`.
+
+            ⚠️ Pre-release for testing. The stable download link is unaffected until promoted.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

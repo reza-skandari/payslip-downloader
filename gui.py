@@ -401,4 +401,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        import traceback
+        log_path = Path(sys.executable).parent / "error.log" if getattr(sys, "frozen", False) else Path("error.log")
+        with open(log_path, "w") as f:
+            traceback.print_exc(file=f)
+        raise
