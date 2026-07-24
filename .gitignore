@@ -1,0 +1,22 @@
+# Credentials and session
+.env
+.session.json
+
+# Downloaded payslips
+payslips/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Playwright
+.playwright/
+.playwright-browsers/
+
+# PyInstaller build output
+dist/
+build/
+
+# Local folders
+website-repo/
