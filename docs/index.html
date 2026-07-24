@@ -343,7 +343,7 @@
       <svg class="icon" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M7.47 10.78a.75.75 0 0 0 1.06 0l3.75-3.75a.75.75 0 0 0-1.06-1.06L8.75 8.44V1.75a.75.75 0 0 0-1.5 0v6.69L4.78 5.97a.75.75 0 0 0-1.06 1.06l3.75 3.75ZM3.75 13a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z"/>
       </svg>
-      Download for Windows
+      Download for Windows <span id="dl-version" style="opacity:0.7;font-size:0.85em;margin-left:4px;"></span>
     </a>
     <a href="https://github.com/reza-skandari/payslip-downloader" target="_blank" rel="noopener"
        class="btn" style="background:var(--surface);border:1px solid var(--border);color:var(--text);">
@@ -432,6 +432,12 @@
       if (count > 0)
         document.getElementById('dl-count').textContent =
           count.toLocaleString() + ' download' + (count !== 1 ? 's' : '');
+      if (data.tag_name) {
+        const v = document.getElementById('dl-version');
+        if (v) v.textContent = '(' + data.tag_name + ')';
+        const a = document.querySelector('a.btn-download');
+        if (a) a.href = 'https://github.com/reza-skandari/payslip-downloader/releases/latest/download/payslip-downloader-' + data.tag_name + '.exe';
+      }
     })
     .catch(() => {});
 
